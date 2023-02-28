@@ -1,0 +1,381 @@
+os_parsers:
+  ##########
+  # HbbTV vendors
+  ##########
+
+  ##########
+  # @note: Windows Phone needs to come before Windows NT 6.1 {0,2}and* before Android to catch cases such as:
+  # Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 920)...
+  # Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 920; ANZ821)...
+  # Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 920; Orange)...
+  # Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 920; Vodafone)...
+  ##########
+
+  ##########
+  # Android
+  # can actually detect rooted android os. do we care?
+  ##########
+  - regex: '(Android)[ \-/](\d+)(?:\.(\d+)|)(?:[.\-]([a-z0-9]+)|)'
+
+  # Android 9; Android 10;
+#  - regex: '(Android) (\d+);'
+#  - regex: '(Android): (\d+)(?:\.(\d+)(?:\.(\d+)|)|);'
+
+  # Citrix Chrome App on Chrome OS
+  # Note, this needs to come before the windows parsers as the app doesn't
+  # properly identify as Chrome OS
+  #
+  # ex: Mozilla/5.0 (X11; Windows aarch64 10718.88.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.118 Safari/537.36 CitrixChromeApp
+#  - regex: '(x86_64|aarch64)\ (\d+)\.(\d+)\.(\d+).{0,100}Chrome.{0,100}(?:CitrixChromeApp)$'
+#    os_replacement: 'Chrome OS'
+
+  ##########
+  # Windows
+  # http://en.wikipedia.org/wiki/Windows_NT#Releases
+  # possibility of false positive when different marketing names share same NT kernel
+  # e.g. windows server 2003 and windows xp
+  # lots of ua strings have Windows NT 4.1 !?!?!?!? !?!? !? !????!?! !!! ??? !?!?! ?
+  # (very) roughly ordered in terms of frequency of occurence of regex (win xp currently most frequent, etc)
+  ##########
+
+  # @note: This needs to come before Windows NT 6.1
+#  - regex: '(Windows ?Mobile)'
+#    os_replacement: 'Windows Mobile'
+
+  - regex: '(Windows 10)'
+    os_replacement: 'Windows10'
+
+  - regex: '(Windows (?:NT 5\.2|NT 5\.1))'
+    os_replacement: 'WindowsXP'
+
+  - regex: '(Win(?:dows NT |32NT\/)6\.1)'
+    os_replacement: 'Windows7'
+
+#  - regex: '(Win(?:dows NT |32NT\/)6\.0)'
+#    os_replacement: 'Windows'
+#    os_v1_replacement: 'Vista'
+
+#  - regex: '(Win(?:dows NT |32NT\/)6\.4)'
+#    os_replacement: 'Windows 10'
+#
+#  - regex: '(Windows NT 10\.0)'
+#    os_replacement: 'Windows 10'
+
+  ##########
+  # Mac OS
+  # @ref: http://en.wikipedia.org/wiki/Mac_OS_X#Versions
+  # @ref: http://www.puredarwin.org/curious/versions
+  ##########
+  - regex: '((?:Mac[ +]?|; )OS[ +]X)[\s+/](?:(\d+)[_.](\d+)(?:[_.](\d+)|)|Mach-O)'
+    os_replacement: 'MacOSX'
+  - regex: 'Mac OS X\s.{1,50}\s(\d+).(\d+).(\d+)'
+    os_replacement: 'MacOSX'
+  # Leopard
+#  - regex: ' (Dar)(win)/(9).(\d+).{0,100}\((?:i386|x86_64|Power Macintosh)\)'
+#    os_replacement: 'Mac OS X'
+#    os_v1_replacement: '10'
+#  # Snow Leopard
+#  - regex: ' (Dar)(win)/(10).(\d+).{0,100}\((?:i386|x86_64)\)'
+#    os_replacement: 'Mac OS X'
+#    os_v1_replacement: '10'
+#  # Lion
+#  - regex: ' (Dar)(win)/(11).(\d+).{0,100}\((?:i386|x86_64)\)'
+#    os_replacement: 'Mac OS X'
+#    os_v1_replacement: '10'
+#  # Mountain Lion
+#  - regex: ' (Dar)(win)/(12).(\d+).{0,100}\((?:i386|x86_64)\)'
+#    os_replacement: 'Mac OS X'
+#    os_v1_replacement: '10'
+#  # Mavericks
+#  - regex: ' (Dar)(win)/(13).(\d+).{0,100}\((?:i386|x86_64)\)'
+#    os_replacement: 'Mac OS X'
+#    os_v1_replacement: '10'
+  # Yosemite is Darwin/14.x but patch versions are inconsistent in the Darwin string;
+  # more accurately covered by CFNetwork regexes downstream
+
+  # builds before tiger don't seem to specify version?
+
+  # ios devices spoof (mac os x), so including intel/ppc prefixes
+#  - regex: '(?:PPC|Intel) (Mac OS X)'
+
+  # Box Drive and Box Sync on Mac OS X use OSX version numbers, not Darwin
+#  - regex: '^Box.{0,200};(Darwin)/(10)\.(1\d)(?:\.(\d+)|)'
+#    os_replacement: 'Mac OS X'
+
+  ##########
+  # iOS
+  # http://en.wikipedia.org/wiki/IOS_version_history
+  ##########
+  - regex: '(CPU[ +]OS|iPhone[ +]OS|CPU[ +]iPhone|CPU IPhone OS|CPU iPad OS)[ +]+(\d+)[_\.](\d+)(?:[_\.](\d+)|)'
+    os_replacement: 'iOS'
+
+  # remaining cases are mostly only opera uas, so catch opera as to not catch iphone spoofs
+#  - regex: '(iPhone|iPad|iPod); Opera'
+#    os_replacement: 'iOS'
+
+  # few more stragglers
+  - regex: '(iPhone|iPad|iPod).{0,100}Mac OS X.{0,100}Version/(\d+)\.(\d+)'
+    os_replacement: 'iOS'
+
+  # iOS Apps
+  - regex: '\b(iOS[ /]|iOS; |iPhone(?:/| v|[ _]OS[/,]|; | OS : |\d,\d/|\d,\d; )|iPad/)(\d{1,2})[_\.](\d{1,2})(?:[_\.](\d+)|)'
+    os_replacement: 'iOS'
+  - regex: '\((iOS);'
+
+  ##########################
+  # iOS devices, the same regex matches mobile safari webviews
+  ##########################
+  - regex: '(iPod|iPhone|iPad)'
+    os_replacement: 'iOS'
+
+  ##########
+  # Chrome OS
+  # if version 0.0.0, probably this stuff:
+  # http://code.google.com/p/chromium-os/issues/detail?id=11573
+  # http://code.google.com/p/chromium-os/issues/detail?id=13790
+  ##########
+  - regex: '(CrOS) [a-z0-9_]+ (\d+)\.(\d+)(?:\.(\d+)|)'
+    os_replacement: 'ChromeOS'
+
+  ##########
+  # Linux distros
+  ##########
+  - regex: '([Dd]ebian)'
+    os_replacement: 'Debian'
+  - regex: '(Linux Mint)(?:/(\d+)|)'
+  - regex: '(Mandriva)(?: Linux|)/(?:[\d.-]+m[a-z]{2}(\d+).(\d)|)'
+
+  ##########
+  # Symbian + Symbian OS
+  # http://en.wikipedia.org/wiki/History_of_Symbian
+  ##########
+#  - regex: '(Symbian[Oo][Ss])[/ ](\d+)\.(\d+)'
+#    os_replacement: 'Symbian OS'
+
+  ##########
+  # BlackBerry devices
+  ##########
+#  - regex: '(Black[Bb]erry)[0-9a-z]+/(\d+)\.(\d+)\.(\d+)(?:\.(\d+)|)'
+#    os_replacement: 'BlackBerry OS'
+#  - regex: '(Black[Bb]erry)'
+#    os_replacement: 'BlackBerry OS'
+
+  ##########
+  # Firefox OS
+  ##########
+  # Firefox OS Generic
+  - regex: '\((?:Mobile|Tablet);.{1,200}Firefox/\d+\.\d+'
+    os_replacement: 'FirefoxOS'
+
+
+  ##########
+  # Google TV
+  ##########
+#  - regex: '(GoogleTV)(?: (\d+)\.(\d+)(?:\.(\d+)|)|/[\da-z]+)'
+#
+#  - regex: '(WebTV)/(\d+).(\d+)'
+
+  ##########
+  # Generic patterns
+  # since the majority of os cases are very specific, these go last
+  ##########
+  - regex: '(Fedora|Red Hat|PCLinuxOS|Puppy|Ubuntu|Kindle|Bada|Sailfish|Lubuntu|BackTrack|Slackware|(?:Free|Open|Net|\b)BSD)[/ ](\d+)\.(\d+)(?:\.(\d+)|)(?:\.(\d+)|)'
+
+  # just os
+  - regex: '(Windows|Android|WeTab|Maemo|Web0S)'
+  - regex: '(Ubuntu|Kubuntu|Arch Linux|CentOS|Slackware|Gentoo|openSUSE|SUSE|Red Hat|Fedora|PCLinuxOS|Mageia|SerenityOS|(?:Free|Open|Net|\b)BSD)'
+  # Linux + Kernel Version
+  - regex: '(Linux)(?:[ /](\d+)\.(\d+)(?:\.(\d+)|)|)'
+#  - regex: 'SunOS'
+#    os_replacement: 'Solaris'
+  # Wget/x.x.x (linux-gnu)
+  - regex: '\(linux-gnu\)'
+    os_replacement: 'Linux'
+  - regex: '\(x86_64-redhat-linux-gnu\)'
+    os_replacement: 'Red Hat'
+  - regex: '\((freebsd)(\d+)\.(\d+)\)'
+    os_replacement: 'FreeBSD'
+  - regex: 'linux'
+    os_replacement: 'Linux'
+
+device_parsers:
+
+  ######################################################################
+  # Android parsers
+  #
+  # @ref: https://support.google.com/googleplay/answer/1727131?hl=en
+  ######################################################################
+
+  # Android Application
+  - regex: 'Android Application[^\-]{1,300} - ([^ ]+) (.{1,200}) \w{1,20} - '
+    device_replacement: '$1 $2'
+
+  #########
+  # Dell
+  # @ref: http://www.dell.com
+  # @ref: http://www.softbank.jp/mobile/support/product/101dl/
+  # @ref: http://www.softbank.jp/mobile/support/product/001dl/
+  # @ref: http://developer.emnet.ne.jp/android.html
+  # @ref: http://www.dell.com/in/p/mobile-xcd28/pd
+  # @ref: http://www.dell.com/in/p/mobile-xcd35/pd
+  #########
+#  - regex: '; {0,2}Dell[ _]([^;/]{1,100}?)(?: Build|\) AppleWebKit)'
+#    device_replacement: 'Dell $1'
+
+  #########
+  # Google
+  # @ref: http://www.google.de/glass/start/
+  #########
+#  - regex: '; {0,2}([g|G]oogle)? (Pixel.{0,200}?)(?: Build|\) AppleWebKit)'
+#    device_replacement: '$2'
+
+
+  #########
+  # Huawei
+  # @ref: http://www.huaweidevice.com
+  # @note: Needs to be before HTC due to Desire HD Build on U8815
+  #########
+#  - regex: '; {0,2}(HUAWEI |Huawei-|)([UY][^;/]{1,100}) Build/(?:Huawei|HUAWEI)([UY][^\);]+)\)'
+#    device_replacement: '$1$2'
+
+  #########
+  # HTC
+  # @ref: http://www.htc.com/www/products/
+  # @ref: http://en.wikipedia.org/wiki/List_of_HTC_phones
+#  #########
+#  - regex: '; {0,2}HTC[ _]([^;]{1,200}); Windows Phone'
+#    device_replacement: 'HTC $1'
+
+  #########
+  # Lenovo
+  # @ref: http://support.lenovo.com/en_GB/downloads/default.page?#
+  #########
+#  - regex: '\b(?:Lenovo|LENOVO)+[ _\-]?([^,;:/ ]+)'
+#    device_replacement: 'Lenovo $1'
+
+  #########
+  # Meizu
+  # @ref: http://www.meizu.com
+  #########
+#  - regex: '; {0,2}(?:meizu_|MEIZU )(.{1,200}?) {0,2}(?:Build|[;\)])'
+#    device_replacement: 'Meizu $1'
+
+  #########
+  # Philips
+  # @ref: http://www.support.philips.com/support/catalog/products.jsp?_dyncharset=UTF-8&country=&categoryid=MOBILE_PHONES_SMART_SU_CN_CARE&userLanguage=en&navCount=2&groupId=PC_PRODUCTS_AND_PHONES_GR_CN_CARE&catalogType=&navAction=push&userCountry=cn&title=Smartphones&cateId=MOBILE_PHONES_CA_CN_CARE
+  # @TODO: Philips Tablets User-Agents missing!
+  # @ref: http://www.support.philips.com/support/catalog/products.jsp?_dyncharset=UTF-8&country=&categoryid=ENTERTAINMENT_TABLETS_SU_CN_CARE&userLanguage=en&navCount=0&groupId=&catalogType=&navAction=push&userCountry=cn&title=Entertainment+Tablets&cateId=TABLETS_CA_CN_CARE
+  #########
+  # @note: this a best guess according to available philips models. Need more User-Agents
+#  - regex: '; {0,2}(?:Philips|PHILIPS)[ _]([^;/]{1,100}?)(?: Build|\) AppleWebKit)'
+#    device_replacement: 'Philips $1'
+
+  #########
+  # Samsung Android Devices
+  # @ref: http://www.samsung.com/us/mobile/cell-phones/all-products
+  #########
+#  - regex: '; {0,2}(SAMSUNG |Samsung )([^\/]{0,50})\/[^ ]{0,50} Build/'
+#    device_replacement: 'Samsung $2'
+#  - regex: '; {0,2}(Galaxy(?: Ace| Nexus| S ?II+|Nexus S| with MCR 1.2| Mini Plus 4G|)) Build/'
+#    device_replacement: 'Samsung $1'
+
+  #########
+  # Sony
+  # @ref: http://www.sonymobile.co.jp/index.html
+  # @ref: http://www.sonymobile.com/global-en/products/phones/
+  # @ref: http://www.sony.jp/tablet/
+  #########
+#  - regex: '; Sony (Tablet[^;/]{1,100}?)(?: Build|\) AppleWebKit)'
+#    device_replacement: 'Sony $1'
+
+  ##########
+  # Sony PlayStation
+  # @ref: http://playstation.com
+  # The Vita spoofs the Kindle
+  ##########
+#  - regex: '(PlayStation (?:Portable|Vita|\d+))'
+#    device_replacement: '$1'
+
+
+  #########
+  # XiaoMi
+  # @ref: http://www.xiaomi.com/event/buyphone
+  #########
+#  - regex: '; {0,2}((Mi|MI|HM|MI-ONE|Redmi)[ -](NOTE |Note |)[^;/\)]*)'
+#    device_replacement: 'XiaoMi $1'
+
+  #########
+  # Generic Windows Phones
+  #########
+  - regex: 'Windows Phone [^;]{1,30}; .{0,100}?IEMobile/[^;\)]+[;\)] ?(?:ARM; ?Touch; ?|Touch; ?|WpsLondonTest; ?|)([^;]{1,200}); {0,2}([^;,\)]+)'
+    device_replacement: '$1 $2'
+
+  ######################################################################
+  # Other Devices Parser
+  ######################################################################
+
+  ##########
+  # iSTUFF
+  # @note: complete but probably catches spoofs
+  #   ipad and ipod must be parsed before iphone
+  #   cannot determine specific device type from ua string. (3g, 3gs, 4, etc)
+  ##########
+  # @note: on some ua the device can be identified e.g. iPhone5,1
+  - regex: '(iPhone|iPad|iPod)(\d+,\d+)'
+    device_replacement: '$1'
+  # @note: iPad needs to be before iPhone
+  - regex: '(iPad)(?:;| Simulator;)'
+    device_replacement: '$1'
+  - regex: '(iPod)(?:;| touch;| Simulator;)'
+    device_replacement: '$1'
+  - regex: '(iPhone)(?:;| Simulator;)'
+    device_replacement: '$1'
+  - regex: '(Watch)(\d+,\d+)'
+    device_replacement: 'Apple $1'
+  - regex: '(Apple Watch)(?:;| Simulator;)'
+    device_replacement: '$1'
+  - regex: '(HomePod)(?:;| Simulator;)'
+    device_replacement: '$1'
+  - regex: 'iPhone'
+    device_replacement: 'iPhone'
+
+  ##########
+  # Dell
+  ##########
+#  - regex: '\bDell ([A-Za-z0-9]+)'
+#    device_replacement: 'Dell $1'
+
+  ##########
+  # htc
+  ##########
+#  - regex: '\b(?:HTC/|HTC/[a-z0-9]{1,20}/|)HTC[ _\-;]? {0,2}(.{0,200}?)(?:-?Mozilla|fingerPrint|[;/\(\)]|$)'
+#    device_replacement: 'HTC $1'
+
+  ##########
+  # Huawei
+  ##########
+#  - regex: 'Huawei([A-Za-z0-9]+)'
+#    device_replacement: 'Huawei $1'
+
+  ##########
+  # lenovo
+  ##########
+#  - regex: 'Lenovo[_\-]([A-Za-z0-9]+)'
+#    device_replacement: 'Lenovo $1'
+
+
+  #########
+  # Android General Device Matching (far from perfect)
+  #########
+  # No build info at all - "Build" follows locale immediately
+  - regex: 'Android[\- ][\d]+(?:\.[\d]+)(?:\.[\d]+|); {0,2}[a-z]{0,2}[_\-]?[A-Za-z]{0,2};?( Build[/ ]|\))'
+    device_replacement: 'Generic Smartphone'
+
+  #########
+  # Apple
+  # @ref: https://www.apple.com/mac/
+  # @note: lookup Mac OS, but exclude iPad, Apple TV, a HTC phone, Kindle, LG
+  # @note: put this at the end, since it is hard to implement contains foo, but not contain bar1, bar 2, bar 3 in go's re2
+  #########
+  - regex: 'Mac OS'
+    device_replacement: 'Mac'
