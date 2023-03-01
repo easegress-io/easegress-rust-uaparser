@@ -1,13 +1,12 @@
-mod models;
-mod errors;
-mod uap;
-mod regexes;
-
-pub use uap::UAP;
-
 use std::collections::HashMap;
-use easegress_sdk::*;
+
 use easegress_macros::easegress_object;
+use easegress_sdk::*;
+
+use uap::UAP;
+
+static UA_DEVICE_HEADER: &str = "x-ua-device";
+static UA_OS_HEADER: &str = "x-ua-os";
 
 #[easegress_object]
 struct ParseUserAgent {
@@ -17,7 +16,7 @@ struct ParseUserAgent {
 #[easegress_object]
 impl Program for ParseUserAgent {
     fn new(_param: HashMap<String, String>) -> Self {
-        let regexes = include_bytes!("../regexes.yaml");
+        let regexes = include_bytes!("../../regexes.yaml");
         Self {
             uap: UAP::from_str(std::str::from_utf8(regexes.as_slice()).unwrap()).unwrap(),
         }
@@ -27,17 +26,10 @@ impl Program for ParseUserAgent {
         let user_agent = request::get_header("user-agent".to_string());
 
         let device = self.uap.parse_device(&user_agent);
-        request::set_header("x-ua-device".to_string(), device.device.unwrap().to_string());
+        request::set_header(UA_DEVICE_HEADER.to_string(), device.device.unwrap().to_string());
 
         let os = self.uap.parse_os(&user_agent);
-        request::set_header("x-ua-os".to_string(), os.os.unwrap().to_string());
-
-        let headers = request::get_all_header();
-        for header in headers.iter() {
-            for val in header.1.iter() {
-                log(LogLevel::Info, format!("{}, {}", header.0, val));
-            }
-        }
+        request::set_header(UA_OS_HEADER.to_string(), os.os.unwrap().to_string());
         0
     }
 }

@@ -8,6 +8,11 @@ use crate::errors::MatcherError;
 use crate::models::{Device, OS};
 use crate::regexes::{DeviceMatcher, OSMatcher};
 
+mod models;
+mod errors;
+mod regexes;
+
+#[derive(Clone)]
 pub struct UAP {
     replacement_regex: Regex,
     device_regexes: Vec<DeviceMatcher>,

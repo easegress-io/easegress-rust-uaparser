@@ -1,14 +1,10 @@
-[package]
-name = "uaparser"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [
+    "easegress",
+    "cloudflare",
+    "uap",
+]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-[lib]
-crate-type = ["cdylib", "rlib"]
-
-[dependencies]
-regex = "1.7.1"
-yaml-rust = "0.4.5"
-easegress-sdk = "0.1.0"
-easegress-macros = "0.1.0"
+[profile.release]
+# Tell `rustc` to optimize for small code size.
+opt-level = "s"

@@ -1,0 +1,16 @@
+name = "uaparser"
+compatibility_date = "2022-03-01"
+main = "build/worker/shim.mjs"
+
+[vars]
+WORKERS_RS_VERSION = "0.0.13"
+
+[build]
+command = "cargo install -q worker-build && worker-build --release" # required
+
+[[rules]]
+globs = ["**/*.wasm"]
+type = "CompiledWasm"
+
+# read more about configuring your Worker via wrangler.toml at:
+# https://developers.cloudflare.com/workers/cli-wrangler/configuration

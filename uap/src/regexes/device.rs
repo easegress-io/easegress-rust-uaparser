@@ -4,7 +4,7 @@ use yaml_rust::Yaml;
 use crate::errors::MatcherError;
 use crate::regexes::clean_escapes;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Matcher {
     pub regex: Regex,
     pub device: Option<String>,
