@@ -9,9 +9,12 @@ To use the parser, follow these steps:
 1. Edit the `regexes.yaml` file as needed to customize the parser's behavior.
 
 2. If you're using Easegress:
+   - Navigate to the `binary` directory.
+   - Use `easegress.wasm` in your Easegress configuration file.
+  
+   or you can build the parser yourself:
 
    - Navigate to the `easegress` directory.
-   
    - Add the `wasm32-unknown-unknown` target to your Rust installation using the command `rustup target add wasm32-unknown-unknown`.
    
    - Build the parser into a WebAssembly module using the command `cargo build --target wasm32-unknown-unknown --release`. If the build is successful, the resulting `easegress.wasm` file will be located in the `target/wasm32-unknown-unknown/release` directory.
