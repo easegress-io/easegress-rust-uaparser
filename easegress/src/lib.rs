@@ -24,6 +24,9 @@ impl Program for ParseUserAgent {
 
     fn run(&self) -> i32 {
         let user_agent = request::get_header("user-agent".to_string());
+        if user_agent.eq("") {
+            return 0
+        }
 
         let device = self.uap.parse_device(&user_agent);
         request::set_header(UA_DEVICE_HEADER.to_string(), device.device.unwrap().to_string());
