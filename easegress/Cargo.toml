@@ -9,5 +9,5 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 easegress-sdk = "0.1.0"
-easegress-macros = "0.1.0"
+easegress-macros = "0.1.1"
 uap = {path = "../uap"}
