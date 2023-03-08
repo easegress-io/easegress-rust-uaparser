@@ -26,6 +26,6 @@ To use the parser, follow these steps:
    - Publish the worker to Cloudflare using the command `npx wrangler publish`.
    - Once the worker is deployed, you can add Workers Routes to your website to enable the worker to process incoming user-agent strings.
 
-The parser is designed to extract device and OS information from user-agent strings, which are sent by web browsers and other HTTP clients to identify themselves to servers. Specifically, the parser extracts this information and sets `x-ua-device` and `x-ua-header` headers in the request. 
+The parser is designed to extract device and OS information from user-agent strings, which are sent by web browsers and other HTTP clients to identify themselves to servers. Specifically, the parser extracts this information and sets `x-ua-device` and `x-ua-os` headers in the request. 
 
 Note that this snippet assumes some prior knowledge of Rust, WebAssembly, and Cloudflare. If you're not familiar with these technologies, you may need to do some additional research to understand how to use the parser.
