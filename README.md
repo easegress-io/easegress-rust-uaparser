@@ -1,4 +1,6 @@
 # Easegress-rust-uaparser
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Feasegress-io%2Feasegress-rust-uaparser.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Feasegress-io%2Feasegress-rust-uaparser?ref=badge_shield)
+
 
 Easegress-rust-uaparser is a user-agent parser for the Easegress and Cloudflare platforms. It is inspired by the  [uap-core](https://github.com/ua-parser/uap-core) and [user-agent-parser](https://github.com/magiclen/user-agent-parser) projects.
 
@@ -29,3 +31,7 @@ To use the parser, follow these steps:
 The parser is designed to extract device and OS information from user-agent strings, which are sent by web browsers and other HTTP clients to identify themselves to servers. Specifically, the parser extracts this information and sets `x-ua-device` and `x-ua-os` headers in the request. 
 
 Note that this snippet assumes some prior knowledge of Rust, WebAssembly, and Cloudflare. If you're not familiar with these technologies, you may need to do some additional research to understand how to use the parser.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Feasegress-io%2Feasegress-rust-uaparser.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Feasegress-io%2Feasegress-rust-uaparser?ref=badge_large)
